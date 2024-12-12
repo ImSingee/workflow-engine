@@ -1,12 +1,16 @@
 {
-  "name": "workflow-engine-linux-arm64-gnu",
+  "name": "workflow-engine-wasm32-wasi",
   "version": "1.1.1",
   "cpu": [
-    "arm64"
+    "wasm32"
   ],
-  "main": "package-template.linux-arm64-gnu.node",
+  "main": "package-template.wasi.cjs",
   "files": [
-    "package-template.linux-arm64-gnu.node"
+    "package-template.wasm32-wasi.wasm",
+    "package-template.wasi.cjs",
+    "package-template.wasi-browser.js",
+    "wasi-worker.mjs",
+    "wasi-worker-browser.mjs"
   ],
   "description": "Template project for writing node package with napi-rs",
   "keywords": [
@@ -19,7 +23,7 @@
   ],
   "license": "MIT",
   "engines": {
-    "node": ">= 10"
+    "node": ">=14.0.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
@@ -29,10 +33,8 @@
     "url": "git+ssh://git@github.com/napi-rs/package-template-pnpm.git",
     "type": "git"
   },
-  "os": [
-    "linux"
-  ],
-  "libc": [
-    "glibc"
-  ]
+  "browser": "package-template.wasi-browser.js",
+  "dependencies": {
+    "@napi-rs/wasm-runtime": "^0.2.5"
+  }
 }
