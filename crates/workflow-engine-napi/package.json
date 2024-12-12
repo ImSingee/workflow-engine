@@ -1,0 +1,38 @@
+{
+  "name": "workflow-engine",
+  "version": "0.0.0",
+  "engines": {
+    "node": ">= 10"
+  },
+  "packageManager": "pnpm@9",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "artifacts": "napi artifacts",
+    "build": "napi build --cargo-name workflow_engine_napi --platform --release",
+    "build:debug": "napi build --cargo-name workflow_engine_napi --platform",
+    "prepublishOnly": "napi prepublish -t npm",
+    "test": "ava",
+    "universal": "napi universal",
+    "version": "napi version"
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^2.18.4",
+    "ava": "^6.0.1"
+  },
+  "napi": {
+    "name": "workflow-engine",
+    "triples": {
+      "additional": [
+        "aarch64-apple-darwin",
+        "aarch64-unknown-linux-gnu",
+        "aarch64-unknown-linux-musl",
+        "aarch64-pc-windows-msvc",
+        "universal-apple-darwin"
+      ]
+    }
+  },
+  "ava": {
+    "timeout": "3m"
+  }
+}
