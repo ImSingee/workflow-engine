@@ -364,4 +364,5 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
+module.exports.asyncPlus100 = nativeBinding.asyncPlus100
 module.exports.plus100 = nativeBinding.plus100

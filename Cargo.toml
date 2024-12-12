@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/workflow-engine-napi"]
+members = ["crates/workflow-engine-napi", "crates/workflow-engine-core"]
 resolver = "2"
 
 [workspace.package]

@@ -83,5 +83,7 @@ const { instance: __napiInstance, module: __wasiModule, napiModule: __napiModule
 
 function __napi_rs_initialize_modules(__napiInstance) {
   __napiInstance.exports['__napi_register__plus_100_0']?.()
+  __napiInstance.exports['__napi_register__async_plus_100_1']?.()
 }
+module.exports.asyncPlus100 = __napiModule.exports.asyncPlus100
 module.exports.plus100 = __napiModule.exports.plus100
