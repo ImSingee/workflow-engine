@@ -9,8 +9,8 @@ crate-type = ["cdylib"]
 [dependencies]
 workflow-engine-core = { path = "../workflow-engine-core" }
 
-napi = { version = "2", default-features = false, features = ["napi6", "async"] }
-napi-derive = "2"
+napi = { version = "3.0.0-alpha.23" , default-features = false, features = ["napi6", "async"] }
+napi-derive = "3.0.0-alpha.21"
 
 [build-dependencies]
 napi-build = "2"
