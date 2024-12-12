@@ -1,5 +1,9 @@
-workspace.members = ["crates/workflow-engine-napi"]
-workspace.resolver = "2"
+[workspace]
+members = ["crates/workflow-engine-napi"]
+resolver = "2"
+
+[workspace.package]
+rust-version = "1.81.0"
 
 [profile.release]
 lto = true
