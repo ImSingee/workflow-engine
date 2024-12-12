@@ -2,7 +2,7 @@
   "name": "workflow-engine",
   "version": "0.0.0",
   "engines": {
-    "node": ">= 10"
+    "node": ">= 22"
   },
   "packageManager": "pnpm@9.15.0",
   "main": "index.js",
