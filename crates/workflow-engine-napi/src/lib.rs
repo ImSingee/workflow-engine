@@ -2,7 +2,7 @@
 
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
-use napi::{Result, Error};
+use anyhow::{Result, anyhow};
 use workflow_engine_core;
 
 #[napi]
@@ -16,7 +16,7 @@ pub async fn async_plus_100(input: BigInt) -> Result<u64> {
 
 
     if !success {
-        return Err(Error::from_reason("cannot convert input value to u64"));
+        return Err(anyhow!("cannot convert input value to u64"));
     }
 
     Ok(workflow_engine_core::async_add(100, val).await)

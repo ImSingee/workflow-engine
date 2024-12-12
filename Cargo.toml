@@ -5,6 +5,20 @@ resolver = "2"
 [workspace.package]
 rust-version = "1.81.0"
 
+[workspace.dependencies]
+tokio = "1"
+anyhow = "1"
+thiserror = "2"
+chrono = "0.4"
+serde = "1"
+serde_json = "1"
+rand = "0.8"
+uuid = "1"
+
+napi = { version = "3.0.0-alpha.23", default-features = false, features = ["napi9", "async", "chrono_date", "error_anyhow", "serde"] }
+napi-derive = "3.0.0-alpha.21"
+napi-build = "2"
+
 [profile.release]
 lto = true
 strip = "symbols"
