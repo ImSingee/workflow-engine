@@ -1,0 +1,5 @@
+{
+  "lint-staged": {
+    "*.rs": "[noArgs] cargo +nightly fmt"
+  }
+}

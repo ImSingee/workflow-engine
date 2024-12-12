@@ -3,6 +3,7 @@ members = ["crates/workflow-engine-napi", "crates/workflow-engine-core"]
 resolver = "2"
 
 [workspace.package]
+edition = "2021"
 rust-version = "1.81.0"
 
 [workspace.dependencies]
