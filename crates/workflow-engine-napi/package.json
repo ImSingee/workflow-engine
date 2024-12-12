@@ -48,7 +48,7 @@
     "typescript": "^5.5.3"
   },
   "napi": {
-    "binaryName": "package-template",
+    "binaryName": "workflow-engine",
     "targets": [
       "x86_64-apple-darwin",
       "aarch64-apple-darwin",
