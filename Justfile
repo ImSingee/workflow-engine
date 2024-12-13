@@ -4,7 +4,7 @@ default:
     @just --list --justfile {{justfile()}}
 
 test:
-    cargo test
+    cargo nextest run
 
 bench:
     cargo bench
