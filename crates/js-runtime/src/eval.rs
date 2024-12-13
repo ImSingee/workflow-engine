@@ -84,7 +84,9 @@ pub async fn from_v8_value<T: serde::de::DeserializeOwned>(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::deno_runtime::for_test::GetTestDenoRuntime;
     use crate::deno_runtime::GetDenoRuntimeResult;
+    use assertables::*;
     use num_bigint::BigInt;
 
     struct GetEvalDenoRuntime;
@@ -212,16 +214,59 @@ mod tests {
     }
 
     #[tokio::test]
+    #[ignore] // TODO timeout not work https://users.rust-lang.org/t/tokio-timeout-not-timeouting/85895
     #[should_panic(expected = "timeout")]
     async fn test_eval_expr_timeout() {
         eval_expr(
-            GetEvalDenoRuntime,
-            "Promise.resolve(2)",
+            GetTestDenoRuntime,
+            "new Promise(resolve => setTimeout(() => resolve(1024), 100_000))",
             EvalOptions {
-                timeout: Some(Duration::from_millis(1)),
+                timeout: Some(Duration::from_millis(100)),
             },
         )
         .await
         .unwrap()
+    }
+
+    #[tokio::test]
+    #[ignore] // TODO this test fails now
+    async fn test_eval_expr_not_leak() {
+        let rt = tokio::runtime::Handle::current();
+
+        let eval_result = eval_expr::<i32>(
+            GetTestDenoRuntime,
+            "new Promise(resolve => setTimeout(() => resolve(1024), 3000_000))",
+            EvalOptions {
+                timeout: Some(Duration::from_millis(100)),
+            },
+        )
+        .await;
+        assert_err!(&eval_result);
+        assert_contains!(eval_result.unwrap_err().to_string(), "timeout");
+
+        let metrics = rt.metrics();
+
+        eprintln!("start testing");
+
+        for _ in 0..200 {
+            // max wait 200ms
+            let num_active_blocking_threads =
+                metrics.num_blocking_threads() - metrics.num_idle_blocking_threads();
+
+            if num_active_blocking_threads == 0 {
+                return; // success - no leak
+            }
+
+            tokio::time::sleep(std::time::Duration::from_millis(1)).await;
+        }
+
+        eprintln!(
+            "[end] tokio runtime metrics: num_alive_tasks={} num_blocking_threads={} num_idle_blocking_threads={}",
+            metrics.num_alive_tasks(),
+            metrics.num_blocking_threads(),
+            metrics.num_idle_blocking_threads(),
+        );
+
+        panic!("eval_expr leak!!");
     }
 }

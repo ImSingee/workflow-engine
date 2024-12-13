@@ -27,7 +27,14 @@ uuid = { version = "1", features = ["v7"] }
 base64 = "0.22"
 reqwest = { version = "0.12", features = ["json"] }
 derive_builder = "0.20.2"
-deno_core = "0.325.0"
+
+deno_core = "0.324.0"
+deno_console = "0.182.0"
+deno_crypto = "0.196.0"
+deno_fetch = "0.206.0"
+deno_url = "0.182.0"
+deno_web = "0.213.0"
+deno_webidl = "0.182.0"
 num-bigint = "0.4.5"
 
 napi = { version = "3.0.0-alpha.23", default-features = false, features = ["napi9", "async", "chrono_date", "error_anyhow", "serde"] }
@@ -36,6 +43,7 @@ napi-build = "2"
 
 test-log = { version = "0.2", features = ["trace"] }
 criterion2 = { version = "2", features = ["async_tokio"] }
+assertables = "9"
 
 [profile.release]
 lto = true

@@ -17,6 +17,13 @@ futures.workspace = true
 anyhow.workspace = true
 num-bigint.workspace = true
 criterion2.workspace = true
+deno_console.workspace = true
+deno_crypto.workspace = true
+deno_fetch.workspace = true
+deno_url.workspace = true
+deno_web.workspace = true
+deno_webidl.workspace = true
+assertables.workspace = true
 
 [[bench]]
 name = "eval"
