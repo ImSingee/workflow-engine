@@ -1,0 +1,17 @@
+[package]
+name = "js-runtime"
+version = "0.0.0"
+edition = "2021"
+rust-version.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+anyhow.workspace = true
+tokio.workspace = true
+derive_builder.workspace = true
+deno_core.workspace = true
+serde.workspace = true
+serde_v8.workspace = true
+
+[dev-dependencies]
+anyhow.workspace = true
