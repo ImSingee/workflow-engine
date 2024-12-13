@@ -10,33 +10,11 @@ pub struct EvalExecutor {}
 
 impl EvalExecutor {
     /// evaluate the expression
-    pub async fn eval(&self, expression: impl Into<String>) -> Result<i32> {
+    pub async fn eval<T: serde::de::DeserializeOwned + Send+'static>(
+        &self,
+        expression: impl Into<String>,
+    ) -> Result<T> {
         eval_expr(GetEvalDenoRuntime, expression).await
-
-        // let expression = expression.into();
-        //
-        // let val = tokio::task::spawn_blocking(move || {
-        //     let runtime = tokio::runtime::Builder::new_current_thread()
-        //         .enable_all()
-        //         .build()
-        //         .map_err(|err| Error::ExecuteError(err.to_string()))?;
-        //
-        //     runtime.block_on(async {
-        //         let mut runtime = Self::get_js_runtime();
-        //
-        //         let result = (&mut runtime).execute_script("", expression);
-        //
-        //         match result {
-        //             Err(err) => Err(Error::from_deno_execute_script_error(err)),
-        //             Ok(val) => from_v8_value(&mut runtime, val).await,
-        //         }
-        //     })
-        // })
-        // .await??;
-        //
-        // Ok(val)
-
-        // Ok(233)
     }
 
     pub fn builder() -> EvalExecutorBuilder {
