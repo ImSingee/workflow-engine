@@ -1,7 +1,7 @@
 mod executor;
 mod result;
 mod utils;
-mod eval;
+pub mod eval;
 mod deno_runtime;
 
 pub use executor::EvalExecutor;

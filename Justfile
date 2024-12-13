@@ -6,6 +6,9 @@ default:
 test:
     cargo test
 
+bench:
+    cargo bench
+
 build-napi:
     cd crates/workflow-engine-napi && pnpm build
 

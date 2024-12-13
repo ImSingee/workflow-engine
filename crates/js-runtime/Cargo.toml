@@ -16,3 +16,8 @@ futures.workspace = true
 [dev-dependencies]
 anyhow.workspace = true
 num-bigint.workspace = true
+criterion2.workspace = true
+
+[[bench]]
+name = "eval"
+harness = false
