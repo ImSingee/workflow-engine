@@ -1,9 +1,10 @@
 use super::deno_runtime::{DenoRuntime, GetDenoRuntime};
 use super::result::{Error, Result};
 use super::utils::with_timeout;
-use deno_core::v8::{Global, Value};
+use deno_core::v8::{Global, IsolateHandle, Value};
 use deno_core::{serde_v8, v8, PollEventLoopOptions};
 use std::time::Duration;
+use tokio::sync::oneshot;
 
 #[derive(Default, Clone)]
 pub struct EvalOptions {
@@ -17,6 +18,8 @@ pub async fn eval_expr<T: serde::de::DeserializeOwned + Send + 'static>(
 ) -> Result<T> {
     let expression = expression.into();
 
+    let (deno_runtime_handle_sender, mut deno_runtime_handle_receiver) =
+        oneshot::channel::<IsolateHandle>();
     let task = tokio::task::spawn_blocking(move || {
         let runtime = tokio::runtime::Builder::new_current_thread()
             .enable_all()
@@ -31,6 +34,12 @@ pub async fn eval_expr<T: serde::de::DeserializeOwned + Send + 'static>(
                 }
             };
 
+            deno_runtime_handle_sender
+                .send(deno_runtime.v8_isolate().thread_safe_handle())
+                .map_err(|_| {
+                    Error::ExecuteError("failed to get deno runtime handler".to_string())
+                })?;
+
             let result = (&mut deno_runtime).execute_script("", expression);
             match result {
                 Err(err) => Err(Error::from_deno_execute_script_error(err)),
@@ -41,9 +50,19 @@ pub async fn eval_expr<T: serde::de::DeserializeOwned + Send + 'static>(
 
     let task = with_timeout(options.timeout, task);
 
-    let val = task.await???;
+    let task_result = task
+        .await
+        .and_then(|v| v.map_err(Error::from))
+        .and_then(|v| v);
 
-    Ok(val)
+    if task_result.is_err() {
+        // quit deno runtime if need
+        if let Ok(handle) = deno_runtime_handle_receiver.try_recv() {
+            handle.terminate_execution();
+        }
+    }
+
+    task_result
 }
 
 pub async fn from_v8_value<T: serde::de::DeserializeOwned>(
