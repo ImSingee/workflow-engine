@@ -14,7 +14,7 @@ impl EvalExecutor {
         &self,
         expression: impl Into<String>,
     ) -> Result<T> {
-        eval_expr(GetEvalDenoRuntime, expression).await
+        eval_expr(GetEvalDenoRuntime, expression, Default::default()).await
     }
 
     pub fn builder() -> EvalExecutorBuilder {
