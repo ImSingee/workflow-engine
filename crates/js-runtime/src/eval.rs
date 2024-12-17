@@ -230,11 +230,27 @@ mod tests {
 
     #[test]
     #[should_panic(expected = "timeout")]
-    fn test_eval_expr_timeout() {
+    fn test_eval_expr_timeout_blocking() {
         test_async(async {
             eval_expr::<()>(
                 GetEvalDenoRuntime,
                 "while (true) {}",
+                EvalOptions {
+                    timeout: Some(Duration::from_millis(100)),
+                },
+            )
+            .await
+            .unwrap();
+        });
+    }
+
+    #[test]
+    #[should_panic(expected = "timeout")]
+    fn test_eval_expr_timeout_awaiting() {
+        test_async(async {
+            eval_expr::<()>(
+                GetTestDenoRuntime,
+                "new Promise(resolve => setTimeout(() => resolve(1024), 3000_000))",
                 EvalOptions {
                     timeout: Some(Duration::from_millis(100)),
                 },
