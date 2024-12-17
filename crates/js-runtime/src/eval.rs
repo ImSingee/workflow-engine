@@ -244,25 +244,48 @@ mod tests {
         });
     }
 
-    #[tokio::test]
+    #[test]
+    fn test_eval_expr_not_leak_blocking() {
+        test_async(async {
+            let eval_result = eval_expr::<i32>(
+                GetEvalDenoRuntime,
+                "while (true) {}",
+                EvalOptions {
+                    timeout: Some(Duration::from_millis(100)),
+                },
+            )
+            .await;
+            let err = assert_err!(eval_result);
+            assert_contains!(err.to_string(), "timeout");
+
+            should_not_leak().await;
+        })
+    }
+
+    #[test]
     #[ignore] // TODO this test fails now
-    async fn test_eval_expr_not_leak() {
+    fn test_eval_expr_not_leak_awaiting() {
+        test_async(async {
+            let eval_result = eval_expr::<i32>(
+                GetTestDenoRuntime,
+                "new Promise(resolve => setTimeout(() => resolve(1024), 3000_000))",
+                EvalOptions {
+                    timeout: Some(Duration::from_millis(100)),
+                },
+            )
+            .await;
+            let err = assert_err!(eval_result);
+            assert_contains!(err.to_string(), "timeout");
+
+            should_not_leak().await;
+        })
+    }
+
+    async fn should_not_leak() {
         let rt = tokio::runtime::Handle::current();
-
-        let eval_result = eval_expr::<i32>(
-            GetTestDenoRuntime,
-            "new Promise(resolve => setTimeout(() => resolve(1024), 3000_000))",
-            EvalOptions {
-                timeout: Some(Duration::from_millis(100)),
-            },
-        )
-        .await;
-        assert_err!(&eval_result);
-        assert_contains!(eval_result.unwrap_err().to_string(), "timeout");
-
         let metrics = rt.metrics();
 
-        eprintln!("start testing");
+        eprintln!("start leak test");
 
         for _ in 0..200 {
             // max wait 200ms
@@ -270,6 +293,8 @@ mod tests {
                 metrics.num_blocking_threads() - metrics.num_idle_blocking_threads();
 
             if num_active_blocking_threads == 0 {
+                eprintln!("success - num_active_blocking_threads is 0 now - not leak");
+
                 return; // success - no leak
             }
 
@@ -283,6 +308,6 @@ mod tests {
             metrics.num_idle_blocking_threads(),
         );
 
-        panic!("eval_expr leak!!");
+        panic!("leak!!");
     }
 }
