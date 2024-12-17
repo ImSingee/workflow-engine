@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/napi", "crates/core", "crates/js-runtime", "crates/workflow-engine"]
+members = ["crates/napi", "crates/core", "crates/js-runtime", "crates/workflow-engine", "examples"]
 resolver = "2"
 
 [workspace.package]

@@ -1,0 +1,15 @@
+[package]
+name = "examples"
+version = "0.0.0"
+edition.workspace = true
+rust-version.workspace = true
+
+[dev-dependencies]
+workflow-engine.workspace = true
+workflow-engine-core.workspace = true
+
+tokio = { workspace = true, features = ["full"] }
+
+[[example]]
+name = "single-workflow"
+path = "single-workflow/main.rs"
