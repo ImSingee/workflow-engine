@@ -3,7 +3,7 @@
 use anyhow::{anyhow, Result};
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
-use workflow_engine_core;
+use workflow_engine::core as workflow_engine_core;
 
 #[napi]
 pub fn plus_100(input: u32) -> u32 {
