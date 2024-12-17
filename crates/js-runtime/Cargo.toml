@@ -24,6 +24,7 @@ deno_url.workspace = true
 deno_web.workspace = true
 deno_webidl.workspace = true
 assertables.workspace = true
+scopeguard.workspace = true
 
 [[bench]]
 name = "eval"

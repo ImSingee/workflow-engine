@@ -27,6 +27,7 @@ uuid = { version = "1", features = ["v7"] }
 base64 = "0.22"
 reqwest = { version = "0.12", features = ["json"] }
 derive_builder = "0.20.2"
+scopeguard = "1.2.0"
 
 deno_core = "0.324.0"
 deno_console = "0.182.0"

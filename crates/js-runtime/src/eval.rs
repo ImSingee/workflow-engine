@@ -8,7 +8,7 @@ use tokio::sync::oneshot;
 
 #[derive(Default, Clone)]
 pub struct EvalOptions {
-    timeout: Option<Duration>,
+    pub timeout: Option<Duration>,
 }
 
 pub async fn eval_expr<T: serde::de::DeserializeOwned + Send + 'static>(
@@ -88,6 +88,8 @@ mod tests {
     use crate::deno_runtime::GetDenoRuntimeResult;
     use assertables::*;
     use num_bigint::BigInt;
+    use std::future::Future;
+    // -- utils --
 
     struct GetEvalDenoRuntime;
     impl GetDenoRuntime for GetEvalDenoRuntime {
@@ -95,6 +97,19 @@ mod tests {
             DenoRuntime::try_new(Default::default())
         }
     }
+
+    fn test_async(fut: impl Future<Output = ()>) {
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .unwrap();
+
+        let runtime = scopeguard::guard(runtime, |runtime| runtime.shutdown_background());
+
+        runtime.block_on(fut);
+    }
+
+    // -- tests --
 
     #[tokio::test]
     async fn test_eval_expr() {
@@ -213,19 +228,20 @@ mod tests {
         .unwrap()
     }
 
-    #[tokio::test]
-    #[ignore] // TODO timeout not work https://users.rust-lang.org/t/tokio-timeout-not-timeouting/85895
+    #[test]
     #[should_panic(expected = "timeout")]
-    async fn test_eval_expr_timeout() {
-        eval_expr(
-            GetTestDenoRuntime,
-            "new Promise(resolve => setTimeout(() => resolve(1024), 100_000))",
-            EvalOptions {
-                timeout: Some(Duration::from_millis(100)),
-            },
-        )
-        .await
-        .unwrap()
+    fn test_eval_expr_timeout() {
+        test_async(async {
+            eval_expr::<()>(
+                GetEvalDenoRuntime,
+                "while (true) {}",
+                EvalOptions {
+                    timeout: Some(Duration::from_millis(100)),
+                },
+            )
+            .await
+            .unwrap();
+        });
     }
 
     #[tokio::test]
