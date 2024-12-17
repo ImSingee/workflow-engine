@@ -1,5 +1,5 @@
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
-use js_runtime::EvalExecutor;
+use workflow_engine_js_runtime::EvalExecutor;
 
 async fn do_eval_expr(executor: &EvalExecutor, expr: String) {
     executor.eval::<i32>(expr).await.unwrap();

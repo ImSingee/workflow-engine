@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/workflow-engine-napi", "crates/workflow-engine-core", "crates/js-runtime"]
+members = ["crates/napi", "crates/core", "crates/js-runtime", "crates/workflow-engine"]
 resolver = "2"
 
 [workspace.package]
@@ -7,6 +7,11 @@ edition = "2021"
 rust-version = "1.81.0"
 
 [workspace.dependencies]
+workflow-engine = { path = "./crates/workflow-engine" }
+workflow-engine-core = { path = "crates/core" }
+workflow-engine-napi = { path = "crates/napi" }
+workflow-engine-js-runtime = { path = "./crates/js-runtime" }
+
 tokio = "1"
 futures = "0.3"
 tracing = "0.1"

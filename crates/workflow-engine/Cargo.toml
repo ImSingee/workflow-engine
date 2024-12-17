@@ -1,0 +1,7 @@
+[package]
+name = "workflow-engine"
+version = "0.0.0"
+edition = "2021"
+rust-version.workspace = true
+
+[dependencies]

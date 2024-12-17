@@ -25,7 +25,7 @@ concurrency:
   cancel-in-progress: true
 defaults:
   run:
-    working-directory: ./crates/workflow-engine-napi
+    working-directory: ./crates/napi
 jobs:
   build:
     strategy:
@@ -84,7 +84,7 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-          cache-dependency-path: ./crates/workflow-engine-napi/pnpm-lock.yaml
+          cache-dependency-path: ./crates/napi/pnpm-lock.yaml
       - name: Install
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -124,7 +124,7 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-          cache-dependency-path: ./crates/workflow-engine-napi/pnpm-lock.yaml
+          cache-dependency-path: ./crates/napi/pnpm-lock.yaml
           architecture: x86
       - name: Build
         run: ${{ matrix.settings.build }}
@@ -134,7 +134,7 @@ jobs:
         if: matrix.settings.target != 'wasm32-wasip1-threads'
         with:
           name: bindings-${{ matrix.settings.target }}
-          path: ./crates/workflow-engine-napi/${{ env.APP_NAME }}.*.node
+          path: ./crates/napi/${{ env.APP_NAME }}.*.node
           if-no-files-found: error
 
       - name: Upload artifact
@@ -142,7 +142,7 @@ jobs:
         if: matrix.settings.target == 'wasm32-wasip1-threads'
         with:
           name: bindings-${{ matrix.settings.target }}
-          path: ./crates/workflow-engine-napi/${{ env.APP_NAME }}.*.wasm
+          path: ./crates/napi/${{ env.APP_NAME }}.*.wasm
           if-no-files-found: error
   build-freebsd:
     runs-on: ubuntu-latest
@@ -167,7 +167,7 @@ jobs:
             sudo npm install -g corepack
             curl https://sh.rustup.rs -sSf --output rustup.sh
             sh rustup.sh -y --profile minimal --default-toolchain beta
-            cd ./crates/workflow-engine-napi
+            cd ./crates/napi
             corepack prepare
             corepack enable
             source "$HOME/.cargo/env"
@@ -190,7 +190,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bindings-freebsd
-          path: ./crates/workflow-engine-napi/${{ env.APP_NAME }}.*.node
+          path: ./crates/napi/${{ env.APP_NAME }}.*.node
           if-no-files-found: error
   test-macOS-windows-binding:
     name: Test bindings on ${{ matrix.settings.target }} - node@${{ matrix.node }}
@@ -224,7 +224,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: pnpm
-          cache-dependency-path: ./crates/workflow-engine-napi/pnpm-lock.yaml
+          cache-dependency-path: ./crates/napi/pnpm-lock.yaml
           architecture: ${{ matrix.settings.architecture }}
       - name: Install dependencies
         run: pnpm install
@@ -232,7 +232,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bindings-${{ matrix.settings.target }}
-          path: ./crates/workflow-engine-napi
+          path: ./crates/napi
       - name: List packages
         run: ls -R .
         shell: bash
@@ -266,7 +266,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: pnpm
-          cache-dependency-path: ./crates/workflow-engine-napi/pnpm-lock.yaml
+          cache-dependency-path: ./crates/napi/pnpm-lock.yaml
       - name: Output docker params
         id: docker
         run: |
@@ -294,7 +294,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bindings-${{ matrix.target }}
-          path: ./crates/workflow-engine-napi
+          path: ./crates/napi
       - name: List packages
         run: ls -R .
         shell: bash
@@ -307,7 +307,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ steps.docker.outputs.IMAGE }}
-          options: -v ${{ steps.docker.outputs.PNPM_STORE_PATH }}:${{ steps.docker.outputs.PNPM_STORE_PATH }} -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/crates/workflow-engine-napi --platform ${{ steps.docker.outputs.PLATFORM }}
+          options: -v ${{ steps.docker.outputs.PNPM_STORE_PATH }}:${{ steps.docker.outputs.PNPM_STORE_PATH }} -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/crates/napi --platform ${{ steps.docker.outputs.PLATFORM }}
           run: npm run test
   test-wasi:
     name: Test WASI target
@@ -325,14 +325,14 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-          cache-dependency-path: ./crates/workflow-engine-napi/pnpm-lock.yaml
+          cache-dependency-path: ./crates/napi/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: bindings-wasm32-wasip1-threads
-          path: ./crates/workflow-engine-napi
+          path: ./crates/napi
       - name: List packages
         run: ls -R .
         shell: bash
@@ -359,13 +359,13 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-          cache-dependency-path: ./crates/workflow-engine-napi/pnpm-lock.yaml
+          cache-dependency-path: ./crates/napi/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          path: ./crates/workflow-engine-napi/artifacts
+          path: ./crates/napi/artifacts
       - name: create npm dirs
         run: pnpm napi create-npm-dirs
       - name: Move artifacts

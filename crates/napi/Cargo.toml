@@ -7,7 +7,7 @@ version = "0.0.0"
 crate-type = ["cdylib"]
 
 [dependencies]
-workflow-engine-core = { path = "../workflow-engine-core" }
+workflow-engine-core.workspace = true
 
 napi.workspace = true
 napi-derive.workspace = true
