@@ -1,18 +1,12 @@
-pub fn add(left: u32, right: u32) -> u32 {
-    left + right
-}
+mod decl;
+mod decl_builder;
+mod workflow;
 
-pub async fn async_add(left: u64, right: u64) -> u64 {
-    left + right
-}
+pub use decl::*;
+pub use decl_builder::*;
+pub use workflow::Workflow;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+// just makes napi happy now - TODO:  remove this later
+mod napi_demo;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub use napi_demo::*;

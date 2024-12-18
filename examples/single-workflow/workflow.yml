@@ -1,0 +1,51 @@
+id: demo
+name: Demo Workflow
+actions:
+  - id: a
+    type: add
+    input:
+      - type: raw
+        value: 1
+      - type: raw
+        value: 2
+  - id: b
+    type: add
+    skip: true
+    input:
+      - name: a
+        type: raw
+        value: 3
+      - name: b
+        type: raw
+        value: 4
+  - id: c
+    type: '@parallel'
+    skip:
+      type: raw
+      value: true
+    branches:
+      - id: '1'
+        type: add
+        input:
+          - type: expression
+            expression: actions.a.result
+          - type: expression
+            expression: actions.b.result * 2
+      - id: '2'
+        type: add
+        input:
+          - type: expression
+            expression: actions.a.result
+          - type: expression
+            expression: actions.b.result * 2
+    result:
+      type: expression
+      expression: actions.c[1].result + actions.c[2].result
+  - id: d
+    skip: true
+    type: add
+    input:
+      - type: expression
+        expression: actions.c[1].result
+      - type: expression
+        expression: actions.c.result

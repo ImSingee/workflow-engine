@@ -9,6 +9,9 @@ workflow-engine.workspace = true
 workflow-engine-core.workspace = true
 
 tokio = { workspace = true, features = ["full"] }
+serde.workspace = true
+serde_yaml.workspace = true
+anyhow.workspace = true
 
 [[example]]
 name = "single-workflow"
