@@ -1,7 +1,7 @@
 use crate::workflow::WorkflowDef;
 use anyhow::Result;
 use std::sync::Arc;
-use workflow_engine::{DemoWorkflow, Registry, WorkflowEngine};
+use workflow_engine::{Workflow, Registry, WorkflowEngine};
 
 mod actions;
 mod workflow;
@@ -22,7 +22,7 @@ async fn main() -> Result<()> {
     let workflow_def = WorkflowDef::read_from_yaml_file(&workflow_file_path)?;
 
     // TODO convert workflow_def to Workflow
-    let workflow = DemoWorkflow::new();
+    let workflow = Workflow::demo();
 
     println!("Workflow Definition:\n{:#?}", workflow_def);
 

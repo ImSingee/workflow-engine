@@ -1,6 +1,6 @@
 use crate::execute::{ExecuteError, ExecuteOutput, ExecuteResult};
-use crate::workflow::DemoWorkflow;
-use crate::{DemoNode, Registry};
+use crate::registry::Registry;
+use crate::workflow::{NodeRef, Workflow};
 use std::sync::Arc;
 use workflow_engine_core::Workflow as CoreWorkflow;
 
@@ -16,7 +16,7 @@ impl WorkflowEngine {
 
     pub async fn execute_workflow(
         &self,
-        mut workflow: DemoWorkflow, // TODO generic
+        mut workflow: Workflow, // TODO generic
         input: (),
         options: (),
     ) -> ExecuteResult {
@@ -50,7 +50,7 @@ impl WorkflowEngine {
         }
     }
 
-    async fn execute_node(&self, mut node: DemoNode<'_>) -> ExecuteResult {
+    async fn execute_node(&self, mut node: NodeRef<'_>) -> ExecuteResult {
         let workflow = node.workflow();
 
         // TODO execute action
