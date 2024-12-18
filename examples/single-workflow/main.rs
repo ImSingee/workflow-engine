@@ -1,6 +1,9 @@
 use crate::workflow::WorkflowDef;
 use anyhow::Result;
+use std::sync::Arc;
+use workflow_engine::{DemoWorkflow, Registry, WorkflowEngine};
 
+mod actions;
 mod workflow;
 
 #[tokio::main]
@@ -19,12 +22,18 @@ async fn main() -> Result<()> {
     let workflow_def = WorkflowDef::read_from_yaml_file(&workflow_file_path)?;
 
     // TODO convert workflow_def to Workflow
+    let workflow = DemoWorkflow::new();
 
-    println!("workflow definition:\n{:#?}", workflow_def);
+    println!("Workflow Definition:\n{:#?}", workflow_def);
 
-    // TODO create an workflow engine (runner)
+    let mut registry = Registry::new();
 
-    // TODO submit the workflow to the engine
+    let engine = WorkflowEngine::new(Arc::new(registry));
+
+    let input = ();
+    let options = ();
+    let result = engine.execute_workflow(workflow, input, options).await?;
+    println!("Execute Result:\n{:#?}", result);
 
     Ok(())
 }

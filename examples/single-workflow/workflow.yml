@@ -9,7 +9,7 @@ actions:
       - type: raw
         value: 2
   - id: b
-    type: add
+    type: minus
     skip: true
     input:
       - name: a

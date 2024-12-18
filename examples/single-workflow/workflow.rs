@@ -1,10 +1,7 @@
-use def::*;
 pub use def::WorkflowDef;
+use def::*;
 
-impl WorkflowDef {
-
-}
-
+impl WorkflowDef {}
 
 /// def module contains workflow's yaml definition
 mod def {
@@ -36,8 +33,10 @@ mod def {
     #[serde(rename_all = "camelCase")]
     pub enum ActionTypeDef {
         Add {
-            #[serde(flatten)]
-            inputs: InputsDef,
+            input: Vec<InputDef>,
+        },
+        Minus {
+            input: Vec<InputDefWithName>,
         },
         #[serde(rename = "@parallel")]
         Parallel {
@@ -48,14 +47,15 @@ mod def {
 
     #[derive(Debug, Deserialize)]
     #[serde(rename_all = "camelCase")]
-    pub struct InputsDef {
-        input: Vec<InputDef>,
+    pub struct InputDef {
+        #[serde(flatten)]
+        value: InputValueDef<AnyValue>,
     }
 
     #[derive(Debug, Deserialize)]
     #[serde(rename_all = "camelCase")]
-    pub struct InputDef {
-        name: Option<String>,
+    pub struct InputDefWithName {
+        name: String,
         #[serde(flatten)]
         value: InputValueDef<AnyValue>,
     }
