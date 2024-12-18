@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/napi", "crates/core", "crates/js-runtime", "crates/workflow-engine"]
+members = ["crates/napi", "crates/core", "crates/js-runtime", "crates/workflow-engine", "examples"]
 resolver = "2"
 
 [workspace.package]
@@ -33,6 +33,7 @@ base64 = "0.22"
 reqwest = { version = "0.12", features = ["json"] }
 derive_builder = "0.20.2"
 scopeguard = "1.2.0"
+serde_yaml = "0.9.34+deprecated"
 
 deno_core = "0.324.0"
 deno_console = "0.182.0"
