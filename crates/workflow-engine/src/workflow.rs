@@ -3,18 +3,29 @@ use workflow_engine_core::NodeDecl;
 
 #[derive(Debug)]
 pub struct Workflow {
-    step: usize,
+    nodes: Vec<Node>,
+    current_node_index: usize,
 }
 
 impl Workflow {
+    // TODO only for temp use, remove in production
     pub fn demo() -> Self {
-        Self { step: 1 }
+        let nodes = vec![];
+
+        Self::new(nodes)
     }
 }
 
 impl Workflow {
+    pub(crate) fn new(nodes: Vec<Node>) -> Self {
+        Self {
+            nodes,
+            current_node_index: 0,
+        }
+    }
+
     pub(crate) fn mark_current_node_success(&mut self) {
-        self.step += 1;
+        self.current_node_index += 1;
     }
 }
 
@@ -24,11 +35,11 @@ impl core::Workflow for Workflow {
     }
 
     fn get_next_node(&mut self) -> Option<NodeRef> {
-        match self.step {
-            1 => Some(NodeRef::new(self, 1)),
-            2 => Some(NodeRef::new(self, 2)),
-            _ => None,
+        if self.current_node_index >= self.nodes.len() {
+            return None;
         }
+
+        Some(NodeRef::new(self, self.current_node_index))
     }
 }
 
@@ -38,12 +49,15 @@ pub struct Node {}
 #[derive(Debug)]
 pub(crate) struct NodeRef<'w> {
     workflow: &'w mut Workflow,
-    step: usize,
+    node_index: usize,
 }
 
 impl<'w> NodeRef<'w> {
-    fn new(workflow: &'w mut Workflow, step: usize) -> Self {
-        Self { workflow, step }
+    fn new(workflow: &'w mut Workflow, node_index: usize) -> Self {
+        Self {
+            workflow,
+            node_index,
+        }
     }
 
     pub fn workflow(&mut self) -> &mut Workflow {
