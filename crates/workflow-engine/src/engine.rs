@@ -50,8 +50,8 @@ impl WorkflowEngine {
         }
     }
 
-    async fn execute_node(&self, mut node: NodeRef<'_>) -> ExecuteResult {
-        let workflow = node.workflow();
+    async fn execute_node(&self, mut node_ref: NodeRef<'_>) -> ExecuteResult {
+        let (workflow, node) = node_ref.get();
 
         // TODO execute action
         let output = ();

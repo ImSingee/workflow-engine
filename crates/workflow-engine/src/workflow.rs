@@ -1,3 +1,4 @@
+use std::ops::{Deref, DerefMut};
 use workflow_engine_core as core;
 use workflow_engine_core::NodeDecl;
 
@@ -46,6 +47,14 @@ impl core::Workflow for Workflow {
 #[derive(Debug)]
 pub struct Node {}
 
+impl Node {}
+
+impl core::Node<Workflow> for Node {
+    fn get_decl(&self) -> NodeDecl {
+        todo!()
+    }
+}
+
 #[derive(Debug)]
 pub(crate) struct NodeRef<'w> {
     workflow: &'w mut Workflow,
@@ -60,13 +69,30 @@ impl<'w> NodeRef<'w> {
         }
     }
 
-    pub fn workflow(&mut self) -> &mut Workflow {
-        self.workflow
+    pub fn get(&mut self) -> (&mut Workflow, &mut Node) {
+        let workflow_ptr = self.workflow as *mut Workflow;
+        let node_ptr = unsafe { &mut (*workflow_ptr).nodes[self.node_index] as *mut Node };
+
+        unsafe { (&mut *workflow_ptr, &mut *node_ptr) }
+    }
+}
+
+impl<'w> Deref for NodeRef<'w> {
+    type Target = Node;
+
+    fn deref(&self) -> &Self::Target {
+        &self.workflow.nodes[self.node_index]
+    }
+}
+
+impl<'w> DerefMut for NodeRef<'w> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.workflow.nodes[self.node_index]
     }
 }
 
 impl<'w> core::Node<Workflow> for NodeRef<'w> {
     fn get_decl(&self) -> NodeDecl {
-        todo!()
+        self.deref().get_decl()
     }
 }
